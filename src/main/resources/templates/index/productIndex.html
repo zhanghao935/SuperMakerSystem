@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style>
+table,tr,td{border:1px solid black}
+
+</style>
+</head>
+<body>
+<center>
+	<h1>商品列表</h1>
+	<div align="right" style="padding-right: 33%;">
+		<a href="addProduct">添加商品</a>
+	</div>
+	<table class = "myTable" >
+		<tr>
+			<td>序号</td>
+			<td>商品名称</td>
+			<td>库存数量</td>
+			<td>销售价格</td>	
+			<td>操作</td>		
+		</tr>
+		<tbody id="myTable">
+		
+		</tbody>
+		
+	</table>
+	<br>
+	<br>
+	<div style="color:red;" id="messageDiv">
+		
+	</div>
+	<br>
+	<br>
+	<h3>购车清单</h3>
+	<div align="right" style="padding-right: 33%;">
+		<a href="javascript:void(0)" onclick =" clearCar()">清空购车</a>
+	</div>
+	<table class = "myTable" >
+		<tr>
+			<td>商品名称</td>
+			<td>购买数量</td>
+			<td>商品单价</td>	
+			<td>总金额</td>		
+		</tr>
+		<tbody id="myTable1">
+		
+		</tbody>
+	</table>
+	<div id="moneyCount" style="color:red;">
+	总金额:0
+	</div>
+</center>
+</body>
+<script type="text/javascript" src="/js/jquery-1.10.2.min.js"></script>
+<script type="text/javascript">
+
+	getList1();
+
+	/**
+	获取商品列表
+	*/
+	/* function getList(){
+		$.post("/apis/product/findList",function(result){
+			var str = "";
+			$(result).each(function(i,obj){
+				str += "<td>"+obj.id+"</td><td>"+obj.productName+"</td><td>"+obj.productName+"</td><td>1</td><td>"+obj.createTime+"</td><td>"+obj.endTime+"</td><td><a href='#'>加入购车</a></td>";
+			})
+			$("#myTable").append(str);
+		})
+		
+	} */
+	
+	function getList1(){
+		$.post("/apis/product/findList",function(result){
+			var str = "";
+			var str1 = "";
+			$(result.collect).each(function(i,obj){
+				if(obj.count < 3){
+					str1 += obj.name +"商品库存只有"+obj.count+"了,请尽快添加商品.<br>";
+				}
+				str += "<tr><td>"+(i+1)+"</td><td>"+obj.name+"</td><td>"+obj.count+"</td><td>"+obj.price+"</td><td>"
+				+
+				"<a href='javascript:void(0)' onclick='addProductCar(this)'>加入购车</a>&nbsp;&nbsp;&nbsp;<a href='productDetail?"+obj.name+"' >查看损耗</a></td></tr>";
+			})
+			$("#myTable").html(str);
+			$("#messageDiv").html(result.message +"<br>"+str1);
+		})
+	}
+	var moneyCount= 0
+	function addProductCar(obj){
+		var name = $(obj).parents("tr").eq(0).find("td").eq(1).text();	
+		$.post("/apis/product/addProductCar",{
+			productName:name
+		},function(result){
+			moneyCount += result.price;
+			if($("#myTable1").find("[class='"+name+"']").length != 0){
+				$("#myTable1").find("[class='"+name+"']").eq(0).next("td").html(Number($("#myTable1").find("[class='"+name+"']").eq(0).next().text())+1);				
+				$("#myTable1").find("[class='"+name+"']").eq(0).next("td").next("td").next("td").html(Number($("#myTable1").find("[class='"+name+"']").eq(0).next().text())*result.price);				
+			}else{
+				$("#myTable1").append("<tr>			<td class='"+result.productName+"'>"+result.productName+"</td>			<td>1</td>			<td>"+result.price+"</td>				<td>"+result.price+"</td>				</tr>")
+			}
+			$("#moneyCount").html("总金额:"+moneyCount)
+			getList1();
+		})
+		
+		
+	}
+	
+	function clearCar(){
+		$("#myTable1").empty();
+		$("#moneyCount").html("总金额:"+0)
+	}
+	
+	
+	
+</script>
+</html>

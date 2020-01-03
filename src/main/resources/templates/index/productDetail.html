@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style>
+table,tr,td{border:1px solid black}
+
+</style>
+</head>
+<body>
+<center>
+	<h1>损耗详情</h1>
+	<table class = "myTable" >
+		<tr>
+			<td>序号</td>
+			<td>商品名称</td>
+			<td>商品单价</td>
+			<td>生产日期</td>
+			<td>过期日期</td>	
+			<td>是否到期</td>		
+		</tr>
+		<tbody id="myTable">
+		
+		</tbody>
+		
+	</table>
+	
+	<div id="moneyCount" style="color:red;">
+	总损耗:0元
+	</div>
+</center>
+</body>
+<script type="text/javascript" src="/js/jquery-1.10.2.min.js"></script>
+<script type="text/javascript">
+
+	getList();
+
+	/**
+	获取商品列表d
+	*/
+	
+	var count = 0;
+	function getList(){
+		var name = GetQueryString("name");
+		$.post("/apis/product/findProduct",{name:decodeURI(name)},function(result){
+			var str = "";
+			$(result).each(function(i,obj){
+				if(obj.isExprie =="是"){
+					count+= obj.price;
+				}
+				str += "<tr><td>"+(i+1)+"</td><td>"+obj.productName+"</td><td>"+obj.price+"</td><td>"+obj.createTime+"</td><td>"+obj.endTime+"</td><td>"+obj.isExprie+"</td></tr>";
+			})
+			$("#myTable").append(str);
+			$("#moneyCount").html("总损耗:"+count+"元");
+		})
+		
+	} 
+	
+	function GetQueryString(name) {
+	    
+	     return  window.location.href.split("?")[1];
+	}
+	
+	
+	
+</script>
+</html>

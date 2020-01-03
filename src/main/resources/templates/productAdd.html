@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<h1>添加商品</h1>
+	<form>
+		商品名称:<input type="text" id = "productName" size="20"/><br>
+		商品价格:<input type="number" id = "productPice" /><br>
+		生产日期:<input type="date" id = "createTime" /><br>
+		过期时间:<input type="date" id = "endTime" /><br><br>
+		<button id="" hidden="hidden">返回</button>&nbsp;&nbsp;&nbsp;&nbsp;<button type="button" onclick="toIndex()">返回</button>&nbsp;&nbsp;&nbsp;&nbsp;
+		<button type ="button" onclick ="addProduct()">保存</button>
+	</form>
+</body>
+<script type="text/javascript" src="/js/jquery-1.10.2.min.js"></script>
+<script type="text/javascript">
+	
+	function addProduct(){
+		
+		var productName = $("#productName").val();
+		var productPice = $("#productPice").val();
+		var createTime = $("#createTime").val();
+		var endTime = $("#endTime").val();
+		
+		$.post("/apis/product/addProduct",{
+			productName:productName,
+			productPice:productPice,
+			createTime:createTime,
+			endTime:endTime
+		},function(result){
+			window.location.href="index";
+		})
+		
+	}
+	
+	function toIndex(){
+		window.location.href="index";
+	}
+	
+</script>
+</html>
