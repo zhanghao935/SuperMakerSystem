@@ -13,7 +13,7 @@ public class MappingController {
 	
 	/**
 	 * 首页列表
-	 * @return
+	 * @return	String
 	 */
 	@RequestMapping("index")
 	public String index(){
@@ -22,7 +22,7 @@ public class MappingController {
 	
 	/**
 	 * 添加商品
-	 * @return
+	 * @return String
 	 */
 	@RequestMapping("addProduct")
 	public String addProduct(){
@@ -30,7 +30,7 @@ public class MappingController {
 	}
 	/**
 	 * 商品
-	 * @return
+	 * @return String
 	 */
 	@RequestMapping("productDetail")
 	public String productDetail(){
